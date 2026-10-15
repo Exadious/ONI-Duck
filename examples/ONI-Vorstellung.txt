@@ -1,0 +1,39 @@
+REM ONI-Duck - Projektvorstellung (Windows, Editor)
+DEFAULTDELAY 35
+DELAY 800
+GUI r
+DELAY 500
+STRING notepad
+ENTER
+DELAY 1500
+STRING ONI-Duck - WiFi Rubber Ducky auf ESP32-S2
+ENTER
+STRING ========================================
+ENTER
+ENTER
+STRING Ein ESP32-S2 meldet sich am PC als USB-Tastatur und Maus an
+ENTER
+STRING und tippt gespeicherte Ducky-Skripte. Gesteuert wird alles
+ENTER
+STRING ueber eine passwortgeschuetzte Weboberflaeche per WLAN.
+ENTER
+ENTER
+STRING Funktionen:
+ENTER
+STRING - Weboberflaeche: Theme Schwarz/Rot/Weiss, Dark/Light, Sprache waehlbar
+ENTER
+STRING - Skripte speichern, bearbeiten, importieren, per Knopf starten
+ENTER
+STRING - Autostart beim Einstecken und Start ueber den BOOT-Taster
+ENTER
+STRING - Ducky Script: STRING, DELAY, LOCALE, KEYCODE, MOUSE, Media-Tasten
+ENTER
+STRING - 18 Tastaturlayouts (DE, US, GB, FR, RU und mehr)
+ENTER
+STRING - Eigener WLAN-Hotspot oder Verbindung zu vorhandenem WLAN
+ENTER
+STRING - RGB-Status-LED und optionale eigene USB-Kennung
+ENTER
+ENTER
+STRING Hinweis: nur auf eigenen Geraeten oder mit Erlaubnis verwenden.
+ENTER
