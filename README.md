@@ -1,139 +1,143 @@
 # ONI-Duck
 
-**WiFi Rubber Ducky für den ESP32-S2** – eine per WLAN steuerbare USB-Tastatur (BadUSB) mit passwortgeschützter Weboberfläche.
+**WiFi Rubber Ducky for the ESP32-S2** – a Wi-Fi-controlled USB keyboard (BadUSB) with a password-protected web interface.
 
-> ⚠️ **Nur für eigene Geräte oder mit ausdrücklicher Erlaubnis.** Dieses Werkzeug ist zum Lernen, Testen und für Automatisierung gedacht. Der Einsatz an fremden Rechnern ohne Zustimmung kann strafbar sein. Du bist für die Nutzung selbst verantwortlich.
+> ⚠️ **Use only on your own devices or with explicit permission.** This tool is intended for learning, testing and automation. Using it against computers you do not own or are not authorized to test may be illegal. You are solely responsible for how you use it.
 
 ---
 
-## Was ist das?
+## What is it?
 
-Ein ESP32-S2 meldet sich am PC als USB-Tastatur (und Maus) an und tippt gespeicherte **Ducky-Script**-Skripte. Verwaltet wird alles bequem über eine Weboberfläche per WLAN – kein Treiber, keine App, kein Neukompilieren nötig.
+An ESP32-S2 registers itself on a PC as a USB keyboard (and mouse) and types stored **Ducky Script** payloads. Everything is managed from a web interface over Wi-Fi – no driver, no app, no recompiling required.
 
-Angelehnt an [WiFiDuck](https://github.com/SpacehuhnTech/WiFiDuck) und [SuperWiFiDuck](https://github.com/ThingPulse/SuperWiFiDuck), neu aufgebaut für das native USB des ESP32-S2.
+Inspired by [WiFiDuck](https://github.com/SpacehuhnTech/WiFiDuck) and [SuperWiFiDuck](https://github.com/ThingPulse/SuperWiFiDuck), rebuilt around the native USB of the ESP32-S2.
 
 ## Hardware
 
-- **ESP32-S2** (entwickelt/getestet mit dem **ESP32-S2-DevKitC-1**)
-- USB-Datenkabel
-- Optional: die On-Board-RGB-LED (WS2812 an GPIO18) dient als Statusanzeige
+- **ESP32-S2** (developed/tested with the **ESP32-S2-DevKitC-1**)
+- A USB data cable
+- Optional: the on-board RGB LED (WS2812 on GPIO18) is used as a status indicator
 
-## Funktionen
+## Features
 
-- USB-HID: **Tastatur, Maus und Media-/Consumer-Tasten**
-- **Weboberfläche** (Theme Schwarz/Rot/Weiß, Dark-/Light-Umschalter, Oberflächensprache umschaltbar)
-- Skripte **anlegen, bearbeiten, importieren, herunterladen, per Knopf starten**
-- **Autostart** beim Einstecken und Start über den **BOOT-Taster**
-- **Live-Konsole**, **Stop** (Abbruch während der Ausführung) und **Dry-Run** (Testlauf ohne echtes Tippen)
-- **Ducky Script**: `STRING`, `STRINGLN`, `DELAY`, `DEFAULTDELAY`, `REPEAT`, `LOCALE`, `KEYCODE`, `MOUSE`, `CLICK`/`PRESS`/`RELEASE`, `SCROLL`, `LED`, Media-Tasten u. v. m.
-- **18 Tastaturlayouts** (DE, US, GB, ES, DK, RU, FR, BE, PT, IT, SK, CZ, SI, BG, CA-FR, CH-DE, CH-FR, HU)
-- Eigener **WLAN-Hotspot (AP)** oder Verbindung zu vorhandenem WLAN (**STA**)
-- **mDNS** (`http://oni-duck.local`), **OTA-Update** über die Weboberfläche
-- **Backup/Restore** aller Skripte und Einstellungen
-- Einstellbare **Tippgeschwindigkeit** (inkl. „menschlichem" Jitter) und **Maus-Jiggler**
-- Optionale eigene **USB-Kennung** (VID/PID/Hersteller/Produkt)
+- USB HID: **keyboard, mouse and media/consumer keys**
+- **Web interface** (black/red/white theme, dark/light toggle, switchable interface language)
+- Create, edit, import, download scripts and **run them with a button**
+- **Autostart** on plug-in and launch via the **BOOT button**
+- **Live console**, **Stop** (abort a running payload) and **Dry-Run** (test run without actually typing)
+- **Ducky Script**: `STRING`, `STRINGLN`, `DELAY`, `DEFAULTDELAY`, `REPEAT`, `LOCALE`, `KEYCODE`, `MOUSE`, `CLICK`/`PRESS`/`RELEASE`, `SCROLL`, `LED`, media keys and more
+- **18 keyboard layouts** (DE, US, GB, ES, DK, RU, FR, BE, PT, IT, SK, CZ, SI, BG, CA-FR, CH-DE, CH-FR, HU)
+- Own **Wi-Fi hotspot (AP)** or join an existing network (**STA**)
+- **mDNS** (`http://oni-duck.local`), **OTA update** via the web interface
+- **Backup/Restore** of all scripts and settings
+- Adjustable **typing speed** (including a "human-like" jitter) and a **mouse jiggler**
+- Optional custom **USB identity** (VID/PID/manufacturer/product)
 
 ---
 
-## Installation / Flashen (Arduino IDE)
+## Installation / Flashing (Arduino IDE)
 
-### 1. Voraussetzungen
+### 1. Prerequisites
 
-1. [Arduino IDE](https://www.arduino.cc/en/software) installieren.
-2. ESP32-Boardpaket einrichten: *Datei → Einstellungen → Zusätzliche Boardverwalter-URLs*:
+1. Install the [Arduino IDE](https://www.arduino.cc/en/software).
+2. Add the ESP32 board package under *File → Preferences → Additional boards manager URLs*:
    ```
    https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
    ```
-3. *Werkzeuge → Board → Boardverwalter* öffnen, nach **esp32** suchen und das Paket von Espressif installieren.
-4. Falls der COM-Port fehlt: USB-UART-Treiber installieren (CP2102 oder CH340).
+3. Open *Tools → Board → Boards Manager*, search for **esp32** and install the package by Espressif.
+4. If the COM port is missing: install the USB-UART driver (CP2102 or CH340).
 
-### 2. Projekt öffnen
+### 2. Open the project
 
-Den Ordner `ONI_Duck` öffnen und darin die `ONI_Duck.ino` starten. **Alle Dateien müssen im selben Ordner liegen** (die `.ino` plus alle `.h`-Dateien) – oben in der IDE sollten mehrere Tabs erscheinen.
+Open the `ONI_Duck` folder and the `ONI_Duck.ino` inside it. **All files must be in the same folder** (the `.ino` plus every `.h` file) – you should see several tabs at the top of the IDE.
 
-### 3. Tools-Einstellungen
+### 3. Tools settings
 
-| Einstellung           | Wert                          |
-| --------------------- | ----------------------------- |
-| Board                 | **ESP32S2 Dev Module**        |
-| USB CDC On Boot       | **Enabled**                   |
-| USB DFU On Boot       | Disabled                      |
-| Upload Mode           | Internal USB *(oder UART0 / Hardware CDC)* |
-| USB Mode              | **USB-OTG (TinyUSB)**         |
-| Partition Scheme      | **Default 4MB with spiffs** *(OTA-fähig)* |
-| Port                  | COM-Port des ESP              |
+| Setting               | Value                          |
+| --------------------- | ------------------------------ |
+| Board                 | **ESP32S2 Dev Module**         |
+| USB CDC On Boot       | **Enabled**                    |
+| USB DFU On Boot       | Disabled                       |
+| Upload Mode           | Internal USB *(or UART0 / Hardware CDC)* |
+| USB Mode              | **USB-OTG (TinyUSB)**          |
+| Partition Scheme      | **Default 4MB with spiffs** *(OTA-capable)* |
+| Port                  | your ESP's COM port            |
 
-### 4. Hochladen
+### 4. Upload
 
-1. Zum Flashen das Kabel in die **USB**-Buchse (nativer S2-USB) stecken.
-2. **Upload** klicken.
-3. Startet der Upload nicht (bleibt bei „Connecting…") oder fehlt der Port:
-   **BOOT gedrückt halten → kurz RESET antippen → BOOT loslassen → Upload** erneut klicken.
-4. Nach „Hash of data verified" / „Done uploading" einmal **RESET** drücken.
+1. For flashing, plug the cable into the **USB** socket (native S2 USB).
+2. Click **Upload**.
+3. If the upload does not start (stuck at "Connecting…") or the port is missing:
+   **hold BOOT → briefly tap RESET → release BOOT → Upload** again.
+4. After "Hash of data verified" / "Done uploading", press **RESET** once.
 
-### Häufige Stolpersteine
+### Common pitfalls
 
-- *„Config.h: No such file or directory"* → nicht alle Dateien im selben Ordner.
-- *„Invalid head of packet" / „port is busy"* → Board nicht im Download-Modus (BOOT/RESET-Trick), seriellen Monitor schließen, Datenkabel (kein reines Ladekabel) verwenden, Upload Speed auf 115200 senken.
-- Der COM-Port kann sich im Download-Modus ändern → Port neu auswählen.
-
----
-
-## Erste Schritte
-
-1. Nach dem Flashen das Kabel in die **USB**-Buchse stecken.
-2. Mit dem WLAN **`ONI-Duck`** verbinden (Standard-Passwort: `oni-duck-1234`).
-3. Im Browser **`http://192.168.4.1`** oder **`http://oni-duck.local`** öffnen.
-4. Anmelden – Standard: Benutzer **`ONI`**, Passwort **`oni`**.
-5. **SSID, Passwörter und Login in den Einstellungen ändern!**
-
-Statusanzeige der RGB-LED (falls vorhanden): blau = WLAN bereit, grün = bereit, rot = Skript läuft.
-
-## Weboberfläche
-
-- **Skripte:** erstellen/bearbeiten, importieren, herunterladen, „beim Einstecken" (Autostart), ▶ Start (echt) und Test (Dry-Run).
-- **Konsole:** zeigt live die laufende Zeile und Ausgaben; **Stop** bricht ab.
-- **Einstellungen:** Login, WLAN-Modus (AP/STA), Tastaturlayout (mit Flaggen), Gerätename (mDNS), Tippgeschwindigkeit, Status-LED, BOOT-Knopf-Skript, Backup/Restore, OTA, USB-Kennung.
-
-## Ducky Script (Kurzreferenz)
-
-```
-REM Kommentar
-DEFAULTDELAY 200      Pause nach jeder Zeile (ms)
-DELAY 1000            einmalige Pause (ms)
-STRING Text           Text tippen
-STRINGLN Text         Text tippen + Enter
-REPEAT 3              vorige Zeile 3x wiederholen
-LOCALE DE             Tastaturlayout umschalten
-ENTER TAB ESC F1..F12 benannte Tasten
-GUI r                 Tasten gleichzeitig (Win+R)
-CTRL ALT DELETE       Kombination
-KEYCODE 0x02 0x04     rohe HID-Codes
-MOUSE 40 -30          Maus relativ bewegen
-CLICK 1               Mausklick (L1 R2 M4 Back8 Fwd16)
-SCROLL 0 10           Mausrad
-VOLUME_UP PLAYPAUSE   Media-/Consumer-Tasten
-LED 40 0 0            RGB-LED setzen (0-255)
-```
-
-**Beispiel** (`examples/ONI-Vorstellung.txt`): öffnet den Windows-Editor und stellt das Projekt vor.
-
-## OTA-Update
-
-Firmware ohne Kabel aktualisieren: in der Arduino IDE *Sketch → Kompilierte Binärdatei exportieren*, dann in der Weboberfläche auf **Firmware-Update (OTA)** (bzw. `http://192.168.4.1/update`) die `.bin` hochladen.
+- *"Config.h: No such file or directory"* → not all files are in the same folder.
+- *"Invalid head of packet" / "port is busy"* → board not in download mode (BOOT/RESET trick), close the serial monitor, use a data cable (not a charge-only cable), lower the upload speed to 115200.
+- The COM port may change in download mode → re-select the port.
 
 ---
 
-## Haftungsausschluss
+## Getting started
 
-Dieses Projekt dient ausschließlich zu Test-, Lern- und Schulungszwecken. Setze es niemals ein, um Schaden anzurichten oder in fremde Systeme ohne Erlaubnis einzugreifen. Die Verantwortung für die Nutzung liegt allein bei dir.
+1. After flashing, plug the cable into the **USB** socket.
+2. Connect to the Wi-Fi network **`ONI-Duck`** (default password: `oni-duck-1234`).
+3. Open **`http://192.168.4.1`** or **`http://oni-duck.local`** in a browser.
+4. Log in – default: user **`ONI`**, password **`oni`**.
+5. **Change the SSID, passwords and login in the settings!**
+
+RGB LED status (if present): blue = Wi-Fi ready, green = ready, red = payload running.
+
+## Web interface
+
+- **Scripts:** create/edit, import, download, "on plug-in" (autostart), ▶ Start (real) and Test (dry-run).
+- **Console:** shows the running line and output live; **Stop** aborts.
+- **Settings:** login, Wi-Fi mode (AP/STA), keyboard layout (with flags), device name (mDNS), typing speed, status LED, BOOT-button script, backup/restore, OTA, USB identity.
+
+## Ducky Script (quick reference)
+
+```
+REM comment
+DEFAULTDELAY 200      pause after every line (ms)
+DELAY 1000            one-off pause (ms)
+STRING text           type text
+STRINGLN text         type text + Enter
+REPEAT 3              repeat the previous line 3x
+LOCALE DE             switch keyboard layout
+ENTER TAB ESC F1..F12 named keys
+GUI r                 keys at the same time (Win+R)
+CTRL ALT DELETE       combination
+KEYCODE 0x02 0x04     raw HID codes
+MOUSE 40 -30          move mouse relatively
+CLICK 1               mouse click (L1 R2 M4 Back8 Fwd16)
+SCROLL 0 10           mouse wheel
+VOLUME_UP PLAYPAUSE   media/consumer keys
+LED 40 0 0            set the RGB LED (0-255)
+```
+
+**Example** (`examples/ONI-Vorstellung.txt`): opens the Windows editor and introduces the project.
+
+## OTA update
+
+Update the firmware without a cable: in the Arduino IDE use *Sketch → Export Compiled Binary*, then upload the `.bin` in the web interface via **Firmware update (OTA)** (or `http://192.168.4.1/update`).
+
+## Releases
+
+Prebuilt firmware (if attached) can be found on the [Releases](../../releases) page. Flash it with [esptool](https://github.com/espressif/esptool) or the [ESP Web Tools](https://esphome.github.io/esp-web-tools/) flasher at offset `0x0`. Otherwise build it yourself with the Arduino IDE as described above.
+
+---
+
+## Disclaimer
+
+This project is intended solely for testing, learning and educational purposes. Never use it to cause harm or to access systems without permission. Responsibility for any use lies entirely with you.
 
 ## Credits
 
-- [WiFiDuck](https://github.com/SpacehuhnTech/WiFiDuck) von Spacehuhn Technologies (MIT) – Ducky-Script-Format und die Tastaturlayout-Tabellen (`locale_*.h`).
-- [SuperWiFiDuck](https://github.com/ThingPulse/SuperWiFiDuck) von ThingPulse (MIT) – native USB-Umsetzung für ESP32-S2/S3.
-- `usb_hid_keys.h` von [MightyPork](https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2) (Public Domain).
+- [WiFiDuck](https://github.com/SpacehuhnTech/WiFiDuck) by Spacehuhn Technologies (MIT) – Ducky Script format and the keyboard layout tables (`locale_*.h`).
+- [SuperWiFiDuck](https://github.com/ThingPulse/SuperWiFiDuck) by ThingPulse (MIT) – native USB implementation for the ESP32-S2/S3.
+- `usb_hid_keys.h` by [MightyPork](https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2) (public domain).
 
-## Lizenz
+## License
 
-Veröffentlicht unter der **MIT-Lizenz** – siehe [LICENSE](LICENSE). Die übernommenen `locale_*.h`- und `usb_hid_keys.h`-Dateien behalten ihre ursprünglichen Lizenzvermerke.
+Released under the **MIT License** – see [LICENSE](LICENSE). The reused `locale_*.h` and `usb_hid_keys.h` files keep their original license notices.
